@@ -1,8 +1,8 @@
 # Failure Analysis — Lab 18: Production RAG
 
-**Họ và tên học viên:** Võ Huy Hoàng  
-**Khóa:** K4 - Track 3A  
-**Nguồn kết quả:** `reports/ragas_report.json` — 20 câu hỏi, chạy live ngày 04/10/2026
+**Họ và tên học viên:** Võ Huy Hoàng
+**Khóa:** K4 - Track 3A
+**Nguồn kết quả:** `reports/ragas_report.json` và `reports/naive_baseline_report.json` — mỗi report 20 câu hỏi, chạy live ngày 04–05/10/2026
 
 ---
 
@@ -10,13 +10,17 @@
 
 | Metric | Naive Baseline | Production | Δ |
 |--------|---------------|------------|---|
-| Faithfulness | Chưa có baseline hợp lệ | 0.9083 | N/A |
-| Answer Relevancy | Chưa có baseline hợp lệ | 0.8951 | N/A |
-| Context Precision | Chưa có baseline hợp lệ | 0.9917 | N/A |
-| Context Recall | Chưa có baseline hợp lệ | 0.8833 | N/A |
+| Faithfulness | 0.8389 | 0.9083 | +0.0694 |
+| Answer Relevancy | 0.7678 | 0.8951 | +0.1273 |
+| Context Precision | 0.9250 | 0.9917 | +0.0667 |
+| Context Recall | 0.9250 | 0.8833 | -0.0417 |
 
-> `reports/naive_baseline_report.json` hiện có `num_questions = 0`, vì vậy các giá trị 0.0
-> trong file đó không phải baseline thực và không được dùng để tính Δ.
+Production tăng mạnh nhất ở Answer Relevancy (+0.1273), đồng thời tăng Faithfulness
+và Context Precision. Context Recall giảm 0.0417; không được che giấu trade-off này.
+Nguyên nhân chính là version-aware retrieval (truy xuất có nhận biết phiên bản) chủ động
+loại policy cũ cho câu hỏi hiện hành, trong khi ba ground truth vẫn yêu cầu cả phiên bản cũ.
+Vì vậy đây vừa là hạn chế của retrieval contract, vừa là benchmark mismatch (độ lệch giữa
+benchmark và ý định câu hỏi), không thể kết luận đơn giản rằng production tốt hơn ở mọi mặt.
 
 ## Bottom-5 Failures
 
