@@ -35,9 +35,15 @@ def main():
     # Step 2: Production Pipeline
     print("\n📌 STEP 2: Running Production Pipeline...")
     print("-" * 40)
-    from src.pipeline import build_pipeline, evaluate_pipeline
-    search, reranker = build_pipeline()
-    prod_results = evaluate_pipeline(search, reranker)
+    from src.pipeline import build_pipeline, evaluate_pipeline, save_latency_report
+    production_start = time.perf_counter()
+    production_timings = {}
+    search, reranker = build_pipeline(production_timings)
+    evaluate_pipeline(search, reranker, production_timings)
+    save_latency_report(
+        production_timings,
+        time.perf_counter() - production_start,
+    )
 
     # Ensure reports are located in reports/
     for f in ["ragas_report.json", "naive_baseline_report.json"]:

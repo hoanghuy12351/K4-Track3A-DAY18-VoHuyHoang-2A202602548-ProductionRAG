@@ -20,6 +20,23 @@
 
 Một pipeline chạy được về mặt code chưa đồng nghĩa là RAG tốt. Mỗi tầng cần evidence riêng: M1 kiểm tra biên chunk, M2 đo retrieval recall, M3 đo ranking quality và latency, M4 cần dataset có ground truth, còn M5 phải so sánh chất lượng/cost giữa LLM enrichment và fallback. Kết quả thật cũng cho thấy không nên chỉ nhìn average score: version-aware retrieval làm câu trả lời hiện hành chính xác hơn nhưng lại giảm Context Recall khi benchmark yêu cầu cả lịch sử.
 
+### Latency breakdown của lần chạy production
+
+| Stage | Thời gian | Tỷ lệ |
+|---|---:|---:|
+| Load + hierarchical chunking | 0.2 giây | 0.0% |
+| Combined enrichment | 292.9 giây | 50.0% |
+| BM25 + Dense/Qdrant indexing | 34.7 giây | 5.9% |
+| Khởi tạo cross-encoder | 0.0 giây | 0.0% |
+| Retrieval + reranking + generation cho 20 câu | 188.6 giây | 32.2% |
+| RAGAS evaluation | 69.9 giây | 11.9% |
+| **Tổng** | **586.3 giây** | **100.0%** |
+
+Enrichment là bottleneck (nút thắt hiệu năng) lớn nhất. Mốc 188.6 giây của query loop
+được suy ra từ tổng trừ các stage đã đo trực tiếp; pipeline đã được bổ sung timer riêng để
+lần chạy tiếp theo ghi trực tiếp giá trị này. Report đầy đủ nằm tại
+`reports/latency_breakdown.md` và dữ liệu máy đọc nằm tại `reports/latency_breakdown.json`.
+
 ---
 
 ## Phần 2: Khó khăn & Cách giải quyết (Challenges & Debugging)

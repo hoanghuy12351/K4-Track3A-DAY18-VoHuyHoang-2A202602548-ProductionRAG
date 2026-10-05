@@ -1,0 +1,32 @@
+{
+  "run_type": "production_live",
+  "run_date": "2026-10-04",
+  "measurement": "captured production console timings, rounded to 0.1 second",
+  "workload": {
+    "documents": 26,
+    "chunks": 117,
+    "questions": 20,
+    "ragas_metric_tasks": 80
+  },
+  "stages_seconds": {
+    "load_and_chunk": 0.2,
+    "enrichment": 292.9,
+    "indexing": 34.7,
+    "reranker_initialization": 0.0,
+    "retrieval_reranking_generation": 188.6,
+    "ragas_evaluation": 69.9
+  },
+  "percent_of_total": {
+    "load_and_chunk": 0.0,
+    "enrichment": 50.0,
+    "indexing": 5.9,
+    "reranker_initialization": 0.0,
+    "retrieval_reranking_generation": 32.2,
+    "ragas_evaluation": 11.9
+  },
+  "total_seconds": 586.3,
+  "derivation": {
+    "retrieval_reranking_generation": "586.3 - 0.2 - 292.9 - 34.7 - 0.0 - 69.9 = 188.6 seconds",
+    "note": "The original live runner timed every other stage and total, but not the 20-query loop separately. The pipeline now measures this stage directly on future runs."
+  }
+}
